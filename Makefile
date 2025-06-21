@@ -22,8 +22,10 @@ KERNEL_ELF = $(BUILD_DIR)/kernel.elf
 KERNEL_BIN = $(BUILD_DIR)/kernel.bin
 OPENSBI_BIN = $(FIRMWARE_DIR)/fw_dynamic.bin
 
-# 源文件 - 从最简单的开始
+# 源文件 - 添加进程管理模块
 SRCS = kernel/main.c \
+       kernel/proc.c \
+       kernel/test_procs.c \
        lib/kprintf.c \
        drivers/uart.c \
        arch/riscv32/boot/start.S
