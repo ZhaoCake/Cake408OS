@@ -34,12 +34,23 @@
             # 构建工具
             gnumake
             
+            # Fish shell
+            fish
+            
             # 文本编辑和开发工具
             vim
             git
           ];
 
           shellHook = ''
+            # 设置环境变量
+            export CROSS_COMPILE=riscv64-none-elf-
+            export CC=riscv64-none-elf-gcc
+            export LD=riscv64-none-elf-ld
+            export OBJCOPY=riscv64-none-elf-objcopy
+            export OBJDUMP=riscv64-none-elf-objdump
+            export GDB=riscv64-none-elf-gdb
+            
             echo "🎂 Welcome to Cake408OS Development Environment!"
             echo ""
             echo "Available tools:"
@@ -69,16 +80,9 @@
             fi
             
             echo ""
-            echo "You can now run 'make all' to build your OS!"
+            echo "🐟 Type 'fish' to start Fish shell, or continue with bash"
+            echo "Environment is ready for Cake408OS development!"
           '';
-
-          # 设置环境变量
-          CROSS_COMPILE = "riscv64-none-elf-";
-          CC = "riscv64-none-elf-gcc";
-          LD = "riscv64-none-elf-ld";
-          OBJCOPY = "riscv64-none-elf-objcopy";
-          OBJDUMP = "riscv64-none-elf-objdump";
-          GDB = "riscv64-none-elf-gdb";
         };
       });
 }
