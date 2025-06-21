@@ -1,7 +1,7 @@
 # Cake408OS Makefile
 
 # 工具链配置
-CROSS_COMPILE = riscv64-unknown-elf-
+CROSS_COMPILE = riscv64-none-elf-
 CC = $(CROSS_COMPILE)gcc
 LD = $(CROSS_COMPILE)ld
 OBJCOPY = $(CROSS_COMPILE)objcopy

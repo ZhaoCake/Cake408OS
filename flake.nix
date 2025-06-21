@@ -43,10 +43,10 @@
             echo "🎂 Welcome to Cake408OS Development Environment!"
             echo ""
             echo "Available tools:"
-            echo "  • RISC-V Cross Compiler: riscv64-unknown-elf-gcc"
+            echo "  • RISC-V Cross Compiler: riscv64-none-elf-gcc"
             echo "  • QEMU RISC-V Emulator: qemu-system-riscv32"
             echo "  • GNU Make: make"
-            echo "  • GDB Debugger: riscv64-unknown-elf-gdb"
+            echo "  • GDB Debugger: riscv64-none-elf-gdb"
             echo ""
             echo "Quick start:"
             echo "  make all     - Build the kernel"
@@ -56,7 +56,7 @@
             echo ""
             
             # 检查工具链是否可用
-            if command -v riscv64-unknown-elf-gcc >/dev/null 2>&1; then
+            if command -v riscv64-none-elf-gcc >/dev/null 2>&1; then
               echo "✅ RISC-V toolchain is ready"
             else
               echo "❌ RISC-V toolchain not found"
@@ -73,12 +73,12 @@
           '';
 
           # 设置环境变量
-          CROSS_COMPILE = "riscv64-unknown-elf-";
-          CC = "riscv64-unknown-elf-gcc";
-          LD = "riscv64-unknown-elf-ld";
-          OBJCOPY = "riscv64-unknown-elf-objcopy";
-          OBJDUMP = "riscv64-unknown-elf-objdump";
-          GDB = "riscv64-unknown-elf-gdb";
+          CROSS_COMPILE = "riscv64-none-elf-";
+          CC = "riscv64-none-elf-gcc";
+          LD = "riscv64-none-elf-ld";
+          OBJCOPY = "riscv64-none-elf-objcopy";
+          OBJDUMP = "riscv64-none-elf-objdump";
+          GDB = "riscv64-none-elf-gdb";
         };
       });
 }
