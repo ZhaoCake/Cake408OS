@@ -26,7 +26,9 @@ OPENSBI_BIN = $(FIRMWARE_DIR)/fw_dynamic.bin
 
 # 源文件 - 添加SBI调用模块和内核库
 SRCS = kernel/kernel.c \
-       kernel/sbi_test.c \
+       tests/sbi_test.c \
+       tests/panic_test.c \
+       tests/test_runner.c \
        klib/kprintf.c \
        klib/string.c \
        klib/memory.c \

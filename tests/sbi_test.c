@@ -1,50 +1,53 @@
 #include <os/types.h>
 #include <os/kprintf.h>
+#include <os/kernel.h>
+#include <debug/debug_all.h>
 #include <sbi.h>
 
 void sbi_test(void)
 {
     struct sbi_ret ret;
     
-    kputs("\n=== SBI Interface Test ===");
+    DEBUG("Starting SBI interface test");
+    TEST_START("SBI Interface Test");
     
     /* 测试SBI规范版本 */
     ret = sbi_get_spec_version();
     if (ret.error == SBI_SUCCESS) {
-        kprintf("SBI Specification Version: %d.%d\n", 
+        INFO("SBI Specification Version: %d.%d", 
                 (int)(ret.value >> 24) & 0x7F, 
                 (int)(ret.value & 0xFFFFFF));
     } else {
-        kprintf("Failed to get SBI spec version (error: %ld)\n", ret.error);
+        ERROR("Failed to get SBI spec version (error: %ld)", ret.error);
     }
     
     /* 测试SBI实现ID */
     ret = sbi_get_impl_id();
     if (ret.error == SBI_SUCCESS) {
-        kprintf("SBI Implementation ID: %ld\n", ret.value);
+        INFO("SBI Implementation ID: %ld", ret.value);
         switch (ret.value) {
-            case 0: kprintf("  (Berkeley Boot Loader)\n"); break;
-            case 1: kprintf("  (OpenSBI)\n"); break;
-            case 2: kprintf("  (Xvisor)\n"); break;
-            case 3: kprintf("  (KVM)\n"); break;
-            case 4: kprintf("  (RustSBI)\n"); break;
-            case 5: kprintf("  (Diosix)\n"); break;
-            default: kprintf("  (Unknown)\n"); break;
+            case 0: INFO("  (Berkeley Boot Loader)"); break;
+            case 1: INFO("  (OpenSBI)"); break;
+            case 2: INFO("  (Xvisor)"); break;
+            case 3: INFO("  (KVM)"); break;
+            case 4: INFO("  (RustSBI)"); break;
+            case 5: INFO("  (Diosix)"); break;
+            default: WARN("  (Unknown implementation)"); break;
         }
     } else {
-        kprintf("Failed to get SBI impl ID (error: %ld)\n", ret.error);
+        ERROR("Failed to get SBI impl ID (error: %ld)", ret.error);
     }
     
     /* 测试SBI实现版本 */
     ret = sbi_get_impl_version();
     if (ret.error == SBI_SUCCESS) {
-        kprintf("SBI Implementation Version: 0x%lx\n", ret.value);
+        INFO("SBI Implementation Version: 0x%lx", ret.value);
     } else {
-        kprintf("Failed to get SBI impl version (error: %ld)\n", ret.error);
+        ERROR("Failed to get SBI impl version (error: %ld)", ret.error);
     }
     
     /* 测试扩展探测 */
-    kputs("Probing SBI extensions:");
+    INFO("Probing SBI extensions:");
     
     const struct {
         int ext_id;
@@ -62,11 +65,12 @@ void sbi_test(void)
     for (int i = 0; i < 7; i++) {
         ret = sbi_probe_extension(extensions[i].ext_id);
         if (ret.error == SBI_SUCCESS && ret.value == 1) {
-            kprintf("  %s: Available\n", extensions[i].name);
+            TEST_PASS("Extension %s: Available", extensions[i].name);
+            DEBUG("Extension %s (ID: %d) is available", extensions[i].name, extensions[i].ext_id);
         } else {
-            kprintf("  %s: Not available\n", extensions[i].name);
+            TEST_FAIL("Extension %s: Not available", extensions[i].name);
         }
     }
     
-    kputs("=== SBI Test Complete ===\n");
+    TEST_END("SBI Test Complete");
 }
