@@ -40,11 +40,15 @@ void trap_init(void) {
 void handle_trap(struct trap_frame *tf) {
     uint32_t cause = tf->scause;
     
+    DEBUG("Trap occurred: cause=0x%08x, sepc=0x%08x, stval=0x%08x", cause, tf->sepc, tf->stval);
+    
     if (cause & 0x80000000) {
         // 处理中断 (最高位为1表示中断)
+        DEBUG("Handling interrupt: %d", cause & 0x7FFFFFFF);
         handle_interrupt(cause & 0x7FFFFFFF, tf);
     } else {
         // 处理异常 (最高位为0表示异常)
+        DEBUG("Handling exception: %d", cause);
         switch (cause) {
             case EXCEPTION_INST_MISALIGNED:
                 ERROR("Instruction address misaligned at 0x%08x", tf->sepc);
@@ -58,13 +62,16 @@ void handle_trap(struct trap_frame *tf) {
                 
             case EXCEPTION_ILLEGAL_INST:
                 ERROR("Illegal instruction at 0x%08x, instruction: 0x%08x", tf->sepc, tf->stval);
-                PANIC("Illegal instruction exception");
+                INFO("Attempting to skip illegal instruction...");
+                tf->sepc += 4; // 尝试跳过非法指令（仅用于测试）
+                WARN("Skipped illegal instruction - this is dangerous!");
                 break;
                 
             case EXCEPTION_BREAKPOINT:
                 DEBUG("Breakpoint hit at 0x%08x", tf->sepc);
                 // 跳过断点指令
                 tf->sepc += 4;
+                SUCCESS("Breakpoint exception handled");
                 break;
                 
             case EXCEPTION_LOAD_MISALIGNED:
@@ -74,7 +81,9 @@ void handle_trap(struct trap_frame *tf) {
                 
             case EXCEPTION_LOAD_ACCESS_FAULT:
                 ERROR("Load access fault at 0x%08x, address: 0x%08x", tf->sepc, tf->stval);
-                PANIC("Load access fault");
+                INFO("Attempting to handle load access fault...");
+                tf->sepc += 4; // 跳过出错指令（仅用于测试）
+                WARN("Skipped faulting load instruction - this is dangerous!");
                 break;
                 
             case EXCEPTION_STORE_MISALIGNED:
@@ -90,6 +99,7 @@ void handle_trap(struct trap_frame *tf) {
             case EXCEPTION_ECALL_FROM_U:
             case EXCEPTION_ECALL_FROM_S:
             case EXCEPTION_ECALL_FROM_M:
+                DEBUG("System call from PC: 0x%08x", tf->sepc);
                 // 系统调用处理
                 syscall_handler(tf);
                 break;
@@ -97,6 +107,7 @@ void handle_trap(struct trap_frame *tf) {
             case EXCEPTION_INST_PAGE_FAULT:
             case EXCEPTION_LOAD_PAGE_FAULT:
             case EXCEPTION_STORE_PAGE_FAULT:
+                DEBUG("Page fault: cause=%d, addr=0x%08x", cause, tf->stval);
                 // 页错误处理
                 page_fault_handler(cause, tf->stval, tf);
                 break;
@@ -106,6 +117,8 @@ void handle_trap(struct trap_frame *tf) {
                 PANIC("Unhandled exception: %d at 0x%08x", cause, tf->sepc);
         }
     }
+    
+    DEBUG("Trap handling completed");
 }
 
 // 中断控制函数

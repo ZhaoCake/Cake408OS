@@ -39,6 +39,9 @@ void run_all_tests(void) {
     /* 测试SBI接口 */
     sbi_test();
     
+    /* 测试异常处理 */
+    run_exception_tests();
+    
     DEBUG("All tests completed successfully");
     TEST_END("All Tests Completed");
 }

@@ -28,6 +28,9 @@ void sbi_test(void);
 /* 内核恐慌功能测试 */
 void test_panic_feature(void);
 
+/* 异常处理测试 */
+void run_exception_tests(void);
+
 /* 运行所有测试 */
 void run_all_tests(void);
 

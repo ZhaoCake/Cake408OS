@@ -48,6 +48,7 @@ SRCS = kernel/kernel.c \
        kernel/syscall.c \
        tests/sbi_test.c \
        tests/panic_test.c \
+       tests/exception_test.c \
        tests/test_runner.c \
        klib/kprintf.c \
        klib/string.c \
