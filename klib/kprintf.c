@@ -178,3 +178,8 @@ int kputs(const char *str) {
     console_putchar('\n');
     return 0;
 }
+
+int kputc(char c) {
+    console_putchar(c);
+    return (unsigned char)c;
+}

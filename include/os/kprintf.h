@@ -28,5 +28,6 @@
 int kprintf(const char *fmt, ...);
 int kvprintf(const char *fmt, va_list args);
 int kputs(const char *str);
+int kputc(char c);
 
 #endif

@@ -27,7 +27,7 @@ OBJCOPY = $(CROSS_COMPILE)objcopy
 OBJDUMP = $(CROSS_COMPILE)objdump
 
 # 编译选项
-CFLAGS = -march=rv32ima -mabi=ilp32 -mcmodel=medany
+CFLAGS = -march=rv32ima_zicsr_zifencei -mabi=ilp32 -mcmodel=medany
 CFLAGS += -fno-builtin -fno-stack-protector -fno-strict-aliasing
 CFLAGS += -Wall -Wextra -g -nostdlib -nostdinc
 # Include路径设置 - 使头文件可以直接通过 #include <os/xxx.h> 引用
@@ -45,6 +45,7 @@ OPENSBI_BIN = $(FIRMWARE_DIR)/fw_dynamic.bin
 
 # 源文件 - 添加SBI调用模块和内核库
 SRCS = kernel/kernel.c \
+       kernel/syscall.c \
        tests/sbi_test.c \
        tests/panic_test.c \
        tests/test_runner.c \
@@ -52,7 +53,11 @@ SRCS = kernel/kernel.c \
        klib/string.c \
        klib/memory.c \
        arch/riscv32/boot/start.S \
-       arch/riscv32/sbi/sbi_call.c
+       arch/riscv32/boot/trap_entry.S \
+       arch/riscv32/sbi/sbi_call.c \
+       arch/riscv32/trap/trap.c \
+       arch/riscv32/trap/interrupt.c \
+       mm/page_fault.c
 
 # 目标文件
 OBJS = $(patsubst %.c,$(BUILD_DIR)/%.o,$(filter %.c,$(SRCS))) \

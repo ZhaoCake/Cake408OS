@@ -22,9 +22,20 @@
 .section .text.init
 .global _start
 
+# 导入异常处理入口
+.extern trap_entry
+
 _start:
     # 设置栈指针 (在内核地址空间上方)
     li sp, 0x80300000
+    
+    # 我们在S-mode下运行，设置监管模式异常向量表
+    la t0, trap_entry
+    csrw stvec, t0
+    
+    # 启用监管模式中断
+    li t0, 0x222  # SIE | STIE | SSIE (启用监管模式中断、定时器中断、软件中断)
+    csrw sie, t0
     
     # 清空BSS段
     la t0, __bss_start

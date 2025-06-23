@@ -23,6 +23,7 @@
 #include <os/kprintf.h>
 #include <os/kernel.h>
 #include <debug/debug_all.h>
+#include <arch/riscv32/include/trap.h>
 
 #if CONFIG_RUN_TESTS
 #include "../tests/tests.h"
@@ -49,6 +50,13 @@ void kernel_main(void) {
 #endif
     
     INFO("Initializing subsystems...");
+    
+    // 初始化异常处理系统
+    trap_init();
+    
+    // 启用全局中断
+    enable_interrupts();
+    SUCCESS("Exception handling and interrupts enabled");
     
 #if CONFIG_RUN_TESTS
     /* 运行系统测试 */
