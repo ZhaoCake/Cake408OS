@@ -10,7 +10,9 @@ OBJDUMP = $(CROSS_COMPILE)objdump
 # 编译选项
 CFLAGS = -march=rv32ima -mabi=ilp32 -mcmodel=medany
 CFLAGS += -fno-builtin -fno-stack-protector -fno-strict-aliasing
-CFLAGS += -Wall -Wextra -g -nostdlib -nostdinc -Iinclude
+CFLAGS += -Wall -Wextra -g -nostdlib -nostdinc
+# Include路径设置 - 使头文件可以直接通过 #include <os/xxx.h> 引用
+CFLAGS += -Iinclude -I. -Iarch/riscv32/include
 
 # 链接选项
 LDFLAGS = -m elf32lriscv -T arch/riscv32/boot/kernel.ld
@@ -22,13 +24,14 @@ KERNEL_ELF = $(BUILD_DIR)/kernel.elf
 KERNEL_BIN = $(BUILD_DIR)/kernel.bin
 OPENSBI_BIN = $(FIRMWARE_DIR)/fw_dynamic.bin
 
-# 源文件 - 添加进程管理模块
-SRCS = kernel/main.c \
-       kernel/proc.c \
-       kernel/test_procs.c \
-       lib/kprintf.c \
-       drivers/uart.c \
-       arch/riscv32/boot/start.S
+# 源文件 - 添加SBI调用模块和内核库
+SRCS = kernel/kernel.c \
+       kernel/sbi_test.c \
+       klib/kprintf.c \
+       klib/string.c \
+       klib/memory.c \
+       arch/riscv32/boot/start.S \
+       arch/riscv32/sbi/sbi_call.c
 
 # 目标文件
 OBJS = $(patsubst %.c,$(BUILD_DIR)/%.o,$(filter %.c,$(SRCS))) \
