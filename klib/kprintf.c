@@ -40,25 +40,33 @@ static void print_string(const char *str) {
     }
 }
 
-static void print_number(unsigned long num, int base, int uppercase) {
+static void print_number_with_width(unsigned long num, int base, int uppercase, int width, char pad_char) {
     char buf[32];
     int i = 0;
     const char *digits = uppercase ? "0123456789ABCDEF" : "0123456789abcdef";
     
     if (num == 0) {
-        console_putchar('0');
-        return;
+        buf[i++] = '0';
+    } else {
+        while (num > 0) {
+            buf[i++] = digits[num % base];
+            num /= base;
+        }
     }
     
-    while (num > 0) {
-        buf[i++] = digits[num % base];
-        num /= base;
+    // 添加填充
+    while (i < width) {
+        buf[i++] = pad_char;
     }
     
     // 反向输出
     while (i > 0) {
         console_putchar(buf[--i]);
     }
+}
+
+static void print_number(unsigned long num, int base, int uppercase) {
+    print_number_with_width(num, base, uppercase, 0, ' ');
 }
 
 static void print_signed_number(long num, int base) {
@@ -76,6 +84,23 @@ int kvprintf(const char *fmt, va_list args) {
     while (*p) {
         if (*p == '%' && *(p + 1)) {
             p++;
+            
+            // 解析宽度和填充字符
+            int width = 0;
+            char pad_char = ' ';
+            
+            // 检查是否有填充字符指定
+            if (*p == '0') {
+                pad_char = '0';
+                p++;
+            }
+            
+            // 解析宽度
+            while (*p >= '0' && *p <= '9') {
+                width = width * 10 + (*p - '0');
+                p++;
+            }
+            
             switch (*p) {
                 case 'd':
                 case 'i': {
@@ -85,28 +110,28 @@ int kvprintf(const char *fmt, va_list args) {
                 }
                 case 'u': {
                     unsigned int val = va_arg(args, unsigned int);
-                    print_number(val, 10, 0);
+                    print_number_with_width(val, 10, 0, width, pad_char);
                     break;
                 }
                 case 'x': {
                     unsigned int val = va_arg(args, unsigned int);
-                    print_number(val, 16, 0);
+                    print_number_with_width(val, 16, 0, width, pad_char);
                     break;
                 }
                 case 'X': {
                     unsigned int val = va_arg(args, unsigned int);
-                    print_number(val, 16, 1);
+                    print_number_with_width(val, 16, 1, width, pad_char);
                     break;
                 }
                 case 'o': {
                     unsigned int val = va_arg(args, unsigned int);
-                    print_number(val, 8, 0);
+                    print_number_with_width(val, 8, 0, width, pad_char);
                     break;
                 }
                 case 'p': {
                     void *ptr = va_arg(args, void*);
                     print_string("0x");
-                    print_number((unsigned long)ptr, 16, 0);
+                    print_number_with_width((unsigned long)ptr, 16, 0, 8, '0');
                     break;
                 }
                 case 's': {
@@ -126,13 +151,13 @@ int kvprintf(const char *fmt, va_list args) {
                         print_signed_number(val, 10);
                     } else if (*p == 'u') {
                         unsigned long val = va_arg(args, unsigned long);
-                        print_number(val, 10, 0);
+                        print_number_with_width(val, 10, 0, width, pad_char);
                     } else if (*p == 'x') {
                         unsigned long val = va_arg(args, unsigned long);
-                        print_number(val, 16, 0);
+                        print_number_with_width(val, 16, 0, width, pad_char);
                     } else if (*p == 'X') {
                         unsigned long val = va_arg(args, unsigned long);
-                        print_number(val, 16, 1);
+                        print_number_with_width(val, 16, 1, width, pad_char);
                     } else {
                         console_putchar('%');
                         console_putchar('l');

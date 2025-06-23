@@ -51,23 +51,27 @@ void handle_trap(struct trap_frame *tf) {
         DEBUG("Handling exception: %d", cause);
         switch (cause) {
             case EXCEPTION_INST_MISALIGNED:
+                // 指令地址不对齐异常
                 ERROR("Instruction address misaligned at 0x%08x", tf->sepc);
                 PANIC("Instruction misaligned exception");
                 break;
                 
             case EXCEPTION_INST_ACCESS_FAULT:
+                // 指令访问故障异常
                 ERROR("Instruction access fault at 0x%08x", tf->sepc);
                 PANIC("Instruction access fault");
                 break;
                 
             case EXCEPTION_ILLEGAL_INST:
-                ERROR("Illegal instruction at 0x%08x, instruction: 0x%08x", tf->sepc, tf->stval);
+                // 非法指令异常
+                ERROR("Illegal instruction at 0x%08x, instruction: 0x%08x", tf->sepc, tf->stval);  // 看来ERROR宏还有问题，不支持传参。
                 INFO("Attempting to skip illegal instruction...");
                 tf->sepc += 4; // 尝试跳过非法指令（仅用于测试）
                 WARN("Skipped illegal instruction - this is dangerous!");
                 break;
                 
             case EXCEPTION_BREAKPOINT:
+                // 断点异常
                 DEBUG("Breakpoint hit at 0x%08x", tf->sepc);
                 // 跳过断点指令
                 tf->sepc += 4;
