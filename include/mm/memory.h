@@ -19,23 +19,15 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef _TESTS_H
-#define _TESTS_H
+#ifndef _MM_MEMORY_H
+#define _MM_MEMORY_H
 
-/* SBI接口测试 */
-void sbi_test(void);
+#include <os/types.h>
 
-/* 内核恐慌功能测试 */
-void test_panic_feature(void);
+// 简单的页面分配器
+paddr_t alloc_pages(uint32_t n);
 
-/* 异常处理测试 */
-void run_exception_tests(void);
+// 内存管理初始化
+void memory_init(void);
 
-/* 内存管理测试 */
-void test_memory_allocator(void);
-void test_memory_limits(void);
-
-/* 运行所有测试 */
-void run_all_tests(void);
-
-#endif /* _TESTS_H */
+#endif // _MM_MEMORY_H

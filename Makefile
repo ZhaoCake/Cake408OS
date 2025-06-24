@@ -49,6 +49,7 @@ SRCS = kernel/kernel.c \
        tests/sbi_test.c \
        tests/panic_test.c \
        tests/exception_test.c \
+       tests/memory_test.c \
        tests/test_runner.c \
        klib/kprintf.c \
        klib/string.c \
@@ -58,7 +59,8 @@ SRCS = kernel/kernel.c \
        arch/riscv32/sbi/sbi_call.c \
        arch/riscv32/trap/trap.c \
        arch/riscv32/trap/interrupt.c \
-       mm/page_fault.c
+       mm/page_fault.c \
+       mm/memory.c
 
 # 目标文件
 OBJS = $(patsubst %.c,$(BUILD_DIR)/%.o,$(filter %.c,$(SRCS))) \

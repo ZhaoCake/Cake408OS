@@ -24,6 +24,7 @@
 #include <os/kernel.h>
 #include <debug/debug_all.h>
 #include <arch/riscv32/include/trap.h>
+#include <mm/memory.h>
 
 #if CONFIG_RUN_TESTS
 #include "../tests/tests.h"
@@ -50,6 +51,9 @@ void kernel_main(void) {
 #endif
     
     INFO("Initializing subsystems...");
+    
+    // 初始化内存管理
+    memory_init();
     
     // 初始化异常处理系统
     trap_init();

@@ -35,7 +35,14 @@ typedef signed long long int64_t;
 typedef uint32_t size_t;
 typedef int32_t  ssize_t;
 typedef uint32_t uintptr_t;
+typedef uint32_t paddr_t;  // 物理地址类型
+
+// 布尔类型定义
+typedef int bool;
+#define true  1
+#define false 0
 
 #define NULL ((void*)0)
+#define PAGE_SIZE 4096   // 页面大小
 
 #endif
