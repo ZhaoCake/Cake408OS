@@ -49,6 +49,7 @@
             
             # 调试工具
             gdb
+            bear
             
             # 构建工具
             gnumake
