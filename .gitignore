@@ -83,3 +83,6 @@ Thumbs.db
 
 # nix
 *.lock
+
+# bear
+compile_commands.json
