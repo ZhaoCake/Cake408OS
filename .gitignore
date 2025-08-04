@@ -86,3 +86,9 @@ Thumbs.db
 
 # bear
 compile_commands.json
+
+# .gitignore
+.envrc
+.direnv/
+.cache/
+.direnv_cache

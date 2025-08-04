@@ -48,6 +48,7 @@
             xz
             
             # 调试工具
+            clang-tools
             gdb
             bear
             

@@ -36,7 +36,7 @@
                 asm volatile("wfi"); /* Wait For Interrupt */                 \
             }                                                                  \
         } else {                                                               \
-            /* 这里可以添加系统重启逻辑 */                                        \
+            /* 这里可以添加系统重启逻辑, 目前还是按照停下来 */                 \
             while (1) {                                                        \
                 asm volatile("wfi");                                           \
             }                                                                  \
@@ -44,16 +44,12 @@
     } while (0)
 
 /* 内核断言 */
-#if CONFIG_DEBUG
 #define ASSERT(condition)                                                      \
     do {                                                                       \
         if (!(condition)) {                                                    \
             PANIC("Assertion failed: %s", #condition);                        \
         }                                                                      \
     } while (0)
-#else
-#define ASSERT(condition) ((void)0)
-#endif
 
 /* 内核主函数声明 */
 void kernel_main(void);
